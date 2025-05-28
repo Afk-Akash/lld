@@ -5,14 +5,14 @@ import org.bookMyShow.controller.TheaterController
 import org.bookMyShow.enums.City
 import org.bookMyShow.model.Movie
 import org.bookMyShow.model.MovieShow
+import org.bookMyShow.model.ShowSeat
 import org.bookMyShow.model.Theater
 
 class BookingService(
     private val movieController: MovieController,
-    private val theaterController: TheaterController
+    private val theaterController: TheaterController,
+    private val showSeatBookingService: ShowSeatInterface
 ) {
-
-
 
     fun startBooking() {
 
@@ -38,6 +38,36 @@ class BookingService(
         val selectedShow = shows[showIndex - 1]
 
         println("You selected the show at ${selectedShow.startTime} on screen ${selectedShow.screen.id}.")
+        println("checking for seat availability")
+
+        val availableSeat = showSeatBookingService.getSeatAvailability(selectedShow.id)
+        if (availableSeat.isEmpty()) {
+            println("Sorry, no seats left for this show.")
+            return
+        }
+
+        availableSeat.forEachIndexed { index, showSeat ->
+            println("${index+1}. ${showSeat.seat.seatNo} - ${showSeat.seat.seatCategory}")
+        }
+
+
+        print("Enter seat nums (comma-sep): ")
+        val selections = readlnOrNull()
+            ?.split(",")
+            ?.map { it.trim().uppercase() }
+            .orEmpty()
+            .filter { num ->
+                availableSeat.any { it.seat.seatNo.equals(num, ignoreCase = true) }
+            }
+
+        val seatsToBook = availableSeat.filter { showSeat ->
+            showSeat.seat.seatNo in selections
+        }
+        if (selections.isEmpty()) {
+            println("No valid seats chosen."); return
+        }
+
+        showSeatBookingService.bookSeat(movieShowId = selectedShow.id, seatsToBook)
 
         println("Ticket booked")
     }

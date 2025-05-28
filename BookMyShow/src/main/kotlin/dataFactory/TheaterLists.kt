@@ -3,10 +3,7 @@ package org.bookMyShow.dataFactory
 import org.bookMyShow.enums.City
 import org.bookMyShow.enums.SeatCategory
 import org.bookMyShow.enums.Language
-import org.bookMyShow.model.Movie
-import org.bookMyShow.model.MovieShow
-import org.bookMyShow.model.Screen
-import org.bookMyShow.model.Theater
+import org.bookMyShow.model.*
 import java.time.LocalTime
 
 val intersteller = Movie(id = "M3", movieName = "Interstellar", genre = "Sci-Fi")
@@ -38,49 +35,122 @@ val commonMovies = listOf(
     rrr
 )
 
+val commonSeatWithVip = mutableListOf(
+    Seat(
+        seatNo = "A1",
+        seatCategory = SeatCategory.VIP
+    ),
+    Seat(
+        seatNo = "A2",
+        seatCategory = SeatCategory.VIP
+    ),
+    Seat(
+        seatNo = "A3",
+        seatCategory = SeatCategory.VIP
+    ),
+    Seat(
+        seatNo = "B1",
+        seatCategory = SeatCategory.PREMIUM
+    ),
+    Seat(
+        seatNo = "B2",
+        seatCategory = SeatCategory.PREMIUM
+    ),
+    Seat(
+        seatNo = "C1",
+        seatCategory = SeatCategory.REGULAR
+    ),
+    Seat(
+        seatNo = "C2",
+        seatCategory = SeatCategory.REGULAR
+    ),
+    Seat(
+        seatNo = "C3",
+        seatCategory = SeatCategory.REGULAR
+    ),
+    Seat(
+        seatNo = "C4",
+        seatCategory = SeatCategory.REGULAR
+    ),
+    Seat(
+        seatNo = "C5",
+        seatCategory = SeatCategory.REGULAR
+    ),
+    Seat(
+        seatNo = "C6",
+        seatCategory = SeatCategory.REGULAR
+    )
+)
+val commonSeat = mutableListOf(
+    Seat(
+        seatNo = "A1",
+        seatCategory = SeatCategory.PREMIUM
+    ),
+    Seat(
+        seatNo = "A2",
+        seatCategory = SeatCategory.PREMIUM
+    ),
+    Seat(
+        seatNo = "A3",
+        seatCategory = SeatCategory.PREMIUM
+    ),
+    Seat(
+        seatNo = "B1",
+        seatCategory = SeatCategory.PREMIUM
+    ),
+    Seat(
+        seatNo = "B2",
+        seatCategory = SeatCategory.PREMIUM
+    ),
+    Seat(
+        seatNo = "C1",
+        seatCategory = SeatCategory.REGULAR
+    ),
+    Seat(
+        seatNo = "C2",
+        seatCategory = SeatCategory.REGULAR
+    ),
+    Seat(
+        seatNo = "C3",
+        seatCategory = SeatCategory.REGULAR
+    ),
+    Seat(
+        seatNo = "C4",
+        seatCategory = SeatCategory.REGULAR
+    ),
+    Seat(
+        seatNo = "C5",
+        seatCategory = SeatCategory.REGULAR
+    ),
+    Seat(
+        seatNo = "C6",
+        seatCategory = SeatCategory.REGULAR
+    )
+)
+
 private val defaultScreens3 = listOf(
     Screen(
         id = "screen-1",
-        seatCount = mapOf(
-            SeatCategory.VIP to 10,
-            SeatCategory.PREMIUM to 20,
-            SeatCategory.REGULAR to 70
-        )
+        seats = commonSeatWithVip
     ),
     Screen(
         id = "screen-2",
-        seatCount = mapOf(
-            SeatCategory.VIP to 20,
-            SeatCategory.PREMIUM to 20,
-            SeatCategory.REGULAR to 60
-        )
+        seats = commonSeatWithVip
     ),
     Screen(
         id = "screen-3",
-        seatCount = mapOf(
-            SeatCategory.VIP to 0,
-            SeatCategory.PREMIUM to 30,
-            SeatCategory.REGULAR to 70
-        )
+        seats = commonSeatWithVip
     )
 )
 
 private val defaultScreens2 = listOf(
     Screen(
         id = "screen-1",
-        seatCount = mapOf(
-            SeatCategory.VIP to 10,
-            SeatCategory.PREMIUM to 20,
-            SeatCategory.REGULAR to 70
-        )
+        seats = commonSeat
     ),
     Screen(
         id = "screen-2",
-        seatCount = mapOf(
-            SeatCategory.VIP to 20,
-            SeatCategory.PREMIUM to 20,
-            SeatCategory.REGULAR to 60
-        )
+        seats =commonSeat
     )
 )
 

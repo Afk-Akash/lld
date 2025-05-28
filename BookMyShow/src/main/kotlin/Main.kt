@@ -6,6 +6,7 @@ import org.bookMyShow.dataFactory.*
 import org.bookMyShow.enums.City
 import org.bookMyShow.model.*
 import org.bookMyShow.service.BookingService
+import org.bookMyShow.service.ShowSeatService
 
 fun main() {
     val cityVsMovie: MutableMap<City, List<Movie>> = mutableMapOf(
@@ -21,9 +22,18 @@ fun main() {
     val movieController = MovieController(cityVsMovie)
     val theaterController = TheaterController(theatersSet)
 
+    val allShows = theatersSet
+        .flatMap { it.movieShows }
+        .distinctBy { it.id }
+
+    val showSeatBookingService = ShowSeatService(allShows)
+
+
     val bookingService = BookingService(
         movieController = movieController,
-        theaterController = theaterController
+        theaterController = theaterController,
+        showSeatBookingService = showSeatBookingService
+
     )
 
     bookingService.startBooking()
