@@ -28,13 +28,16 @@ fun main() {
 
     val showSeatBookingService = ShowSeatService(allShows)
 
-
     val bookingService = BookingService(
         movieController = movieController,
         theaterController = theaterController,
         showSeatBookingService = showSeatBookingService
-
     )
 
-    bookingService.startBooking()
+    while(true){
+        bookingService.startBooking()
+        println("Press 1 to close the application...")
+        val input = readln()
+        if(input == "1") break
+    }
 }

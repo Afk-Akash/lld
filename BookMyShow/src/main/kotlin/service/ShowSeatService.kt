@@ -23,6 +23,10 @@ class ShowSeatService(
     override fun bookSeat(movieShowId: String, seats: List<ShowSeat>): Boolean {
         seats.forEach { requestedSeat ->
             seatStorage[movieShowId]?.forEach {
+                if(it == requestedSeat && it.isBooked){
+                    println(it)
+                    throw RuntimeException("This seat is already booked $requestedSeat")
+                }
                 if (it == requestedSeat){
                     it.isBooked = true
                 }
