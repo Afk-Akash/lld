@@ -1,12 +1,16 @@
 package org.bookMyShow.service
 
 import org.bookMyShow.controller.MovieController
+import org.bookMyShow.controller.PaymentController
 import org.bookMyShow.controller.TheaterController
 import org.bookMyShow.enums.City
 import org.bookMyShow.model.Movie
 import org.bookMyShow.model.MovieShow
 import org.bookMyShow.model.ShowSeat
 import org.bookMyShow.model.Theater
+import org.bookMyShow.strategy.CcAvenuePayment
+import org.bookMyShow.strategy.UpiPayment
+import java.math.BigDecimal
 
 class BookingService(
     private val movieController: MovieController,
@@ -38,6 +42,10 @@ class BookingService(
         val selectedShow = shows[showIndex - 1]
 
         println("You selected the show at ${selectedShow.startTime} on screen ${selectedShow.screen.id}.")
+        seatBooking(selectedShow)
+    }
+
+    private fun seatBooking(selectedShow: MovieShow) {
         println("checking for seat availability")
 
         val availableSeat = showSeatBookingService.getSeatAvailability(selectedShow.id)
@@ -47,11 +55,10 @@ class BookingService(
         }
 
         availableSeat.forEachIndexed { index, showSeat ->
-            println("${index+1}. ${showSeat.seat.seatNo} - ${showSeat.seat.seatCategory}")
+            println("${index + 1}. ${showSeat.seat.seatNo} - ${showSeat.seat.seatCategory}")
         }
 
-
-        print("Enter seat nums (comma-sep): ")
+        print("Enter seat numbers (comma-sep): ")
         val selections = readlnOrNull()
             ?.split(",")
             ?.map { it.trim().uppercase() }
@@ -67,9 +74,28 @@ class BookingService(
             println("No valid seats chosen."); return
         }
 
+        val amount = seatsToBook.sumOf { it.seat.seatCategory.amount }
+
+        performTransaction(amount)
+
         showSeatBookingService.bookSeat(movieShowId = selectedShow.id, seatsToBook)
 
         println("Ticket booked")
+    }
+
+    private fun performTransaction(amount: BigDecimal) {
+        print("Pay by: 1)CCAvenue  2)UPI: ")
+        val strategy = when (readlnOrNull()) {
+            "1" -> CcAvenuePayment()
+            "2" -> UpiPayment()
+            else -> return println("Cancelled")
+        }
+
+        val paymentController = PaymentController(strategy)
+        if (!paymentController.executePayment(amount)) {
+            println("Payment failed")
+            return
+        }
     }
 
     private fun selectCity(): City? {

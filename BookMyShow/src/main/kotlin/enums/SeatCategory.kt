@@ -1,7 +1,9 @@
 package org.bookMyShow.enums
 
-enum class SeatCategory {
-    REGULAR,
-    PREMIUM,
-    VIP
+import java.math.BigDecimal
+
+enum class SeatCategory(val amount: BigDecimal) {
+    REGULAR(BigDecimal(100)),
+    PREMIUM(BigDecimal(200)),
+    VIP(BigDecimal(500))
 }
