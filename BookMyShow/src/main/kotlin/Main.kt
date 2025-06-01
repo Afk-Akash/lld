@@ -26,12 +26,12 @@ fun main() {
         .flatMap { it.movieShows }
         .distinctBy { it.id }
 
-    val showSeatBookingService = ShowSeatService(allShows)
+    ShowSeatService.init(allShows)
 
     val bookingService = BookingService(
         movieController = movieController,
         theaterController = theaterController,
-        showSeatBookingService = showSeatBookingService
+        showSeatBookingService = ShowSeatService
     )
 
     while(true){
