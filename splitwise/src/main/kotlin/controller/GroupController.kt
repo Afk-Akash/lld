@@ -6,7 +6,7 @@ import org.splitwise.model.User
 import java.util.UUID
 
 class GroupController(
-    val balanceSheet: BalanceSheet
+    private val balanceSheet: BalanceSheet
 ) {
     private val groupStorage: MutableMap<String, Group> = mutableMapOf()
 

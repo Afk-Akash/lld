@@ -47,6 +47,7 @@ class ExpenseController(
             groupId = group.groupId
         )
         expenseLog.add(expense)
+        balanceSheet.adjustAllUserBalanceInGroup(groupId = group.groupId)
 
         println("✅ Expense of ₹$amount added by ${payer.name} in group ${group.groupName}")
     }

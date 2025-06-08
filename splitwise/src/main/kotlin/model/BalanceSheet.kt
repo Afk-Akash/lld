@@ -5,13 +5,13 @@ import java.math.BigDecimal
 
 // oracle blackrock dmi finance cashFree, zepto, angelOne, mmt, Tekion, hdfc securities
 
-class BalanceSheet{
+class BalanceSheet {
     private val globalBalanceMap: MutableMap<User, MutableMap<User, BigDecimal>> = mutableMapOf()
     private val groupBalanceMap: MutableMap<String, MutableMap<User, MutableMap<User, BigDecimal>>> = mutableMapOf()
 
     fun settleAmount(settler: User, toWhom: User, amount: BigDecimal, groupId: String) {
         val groupBalance = groupBalanceMap[groupId]
-        if(groupBalance == null){
+        if (groupBalance == null) {
             println("group not found with id $groupId")
             return
         }
@@ -59,6 +59,47 @@ class BalanceSheet{
     }
 
 
+    fun adjustAllUserBalanceInGroup(groupId: String) {
+        val groupBalance = groupBalanceMap[groupId]
+        if (groupBalance == null) {
+            println("Group not found with this id")
+            return
+        }
+
+        groupBalance.forEach { (payer, personsWhoOwe) ->
+            personsWhoOwe.forEach { (person, amount) ->
+                val personWhoOweBalanceMap = groupBalance[person]!!
+                val amountPayerOwe = personWhoOweBalanceMap[payer] ?: BigDecimal.ZERO
+                val finalAmount = amount - amountPayerOwe
+
+                if (finalAmount > BigDecimal.ZERO) {
+                    groupBalance[payer]!![person] = finalAmount
+                    groupBalance[person]!![payer] = BigDecimal.ZERO
+                } else if (finalAmount < BigDecimal.ZERO) {
+                    groupBalance[person]!![payer] = -finalAmount
+                    groupBalance[payer]!![person] = BigDecimal.ZERO
+                }
+            }
+        }
+
+
+        globalBalanceMap.forEach { (payer, personsWhoOwe)->
+            personsWhoOwe.forEach { (personWhoOwe, amount) ->
+
+                val reverseAmount = globalBalanceMap[personWhoOwe]?.get(payer) ?: BigDecimal.ZERO
+
+                val finalAmount = amount - reverseAmount
+                if(finalAmount < BigDecimal.ZERO){
+                    globalBalanceMap[personWhoOwe]!![payer] = -finalAmount
+                    globalBalanceMap[payer]!![personWhoOwe] = BigDecimal.ZERO
+                }else {
+                    globalBalanceMap[payer]!![personWhoOwe] = finalAmount
+                    globalBalanceMap[personWhoOwe]!![payer] = BigDecimal.ZERO
+                }
+            }
+        }
+    }
+
     fun updateGlobalBalance(paidBy: User, paidFor: User, amount: BigDecimal) {
         globalBalanceMap[paidBy]!![paidFor] = globalBalanceMap[paidBy]!![paidFor]!! + amount
     }
@@ -66,7 +107,7 @@ class BalanceSheet{
     fun updateGroupBalance(paidBy: User, paidFor: User, amount: BigDecimal, groupId: String) {
         val group = groupBalanceMap.getOrPut(groupId) { mutableMapOf() }
         val owedMap = group[paidBy]
-        if(owedMap == null) {
+        if (owedMap == null) {
             println("owedMap not found with user ${paidBy.name}")
             return
         }
@@ -75,7 +116,6 @@ class BalanceSheet{
 
         globalBalanceMap[paidBy]!![paidFor] = globalBalanceMap[paidBy]!![paidFor]!! + amount
     }
-
 
 
     fun showGlobalBalance() {
@@ -89,7 +129,7 @@ class BalanceSheet{
 
     fun showGroupBalance(groupId: String) {
         val groupBalance = groupBalanceMap[groupId]
-        if(groupBalance == null){
+        if (groupBalance == null) {
             println("groupBalance is null ")
             return
         }
