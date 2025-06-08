@@ -8,5 +8,6 @@ data class Expense(
     val type: String?,
     val amount: BigDecimal,
     val splits: List<User>,
-    val splitStrategy: SplitStrategy
+    val splitStrategy: SplitStrategy,
+    val groupId: String? = null
 )

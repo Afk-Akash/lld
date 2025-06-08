@@ -10,17 +10,16 @@ import org.splitwise.service.SplitWiseSystemService
 
 fun main() {
     val allUsers = listOf(
-        User(userId = "U1", name = "Akash", email = "akash@example.com", mobileNo = "1111111111"),
-        User(userId = "U2", name = "Neha", email = "neha@example.com", mobileNo = "2222222222"),
-        User(userId = "U3", name = "Ashish", email = "ashish@example.com", mobileNo = "3333333333"),
-        User(userId = "U4", name = "Vikrant", email = "vikrant@example.com", mobileNo = "4444444444"),
-        User(userId = "U5", name = "Pranav", email = "pranav@example.com", mobileNo = "5555555555")
+        User(userId = "u1", name = "Akash", email = "akash@example.com", mobileNo = "1111111111"),
+        User(userId = "u2", name = "Neha", email = "neha@example.com", mobileNo = "2222222222"),
+        User(userId = "u3", name = "Ashish", email = "ashish@example.com", mobileNo = "3333333333"),
+        User(userId = "u4", name = "Vikrant", email = "vikrant@example.com", mobileNo = "4444444444"),
+        User(userId = "u5", name = "Pranav", email = "pranav@example.com", mobileNo = "5555555555")
     )
 
-    println("Welcome ji")
     val userController = UserController()
     allUsers.forEach { user ->
-        userController.createUser(user.name, user.email, user.mobileNo)
+        userController.createUser(user)
     }
 
     val balanceSheet = BalanceSheet()
@@ -34,6 +33,4 @@ fun main() {
     )
 
     splitWiseSystemService.init()
-
-
 }

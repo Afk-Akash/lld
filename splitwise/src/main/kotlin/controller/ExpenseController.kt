@@ -13,6 +13,10 @@ class ExpenseController(
 
     private val expenseLog = mutableListOf<Expense>()
 
+    fun settleDue(settler: User, toWhom: User, amount: BigDecimal, groupId: String) {
+        balanceSheet.settleAmount(settler, toWhom, amount, groupId)
+    }
+
     fun addExpense(
         expenseName: String,
         payer: User,
@@ -39,7 +43,8 @@ class ExpenseController(
             type = "NA",
             amount = amount,
             splits = group.users.toList(),
-            splitStrategy = splitStrategy
+            splitStrategy = splitStrategy,
+            groupId = group.groupId
         )
         expenseLog.add(expense)
 
@@ -56,5 +61,13 @@ class ExpenseController(
 
     fun showUserBalance(user: User) {
         balanceSheet.showBalanceOfUser(user)
+    }
+
+    fun viewExpense(groupId: String){
+        expenseLog.forEach { expense ->
+            if(expense.groupId == groupId){
+                println("expense name - ${expense.name} of amount ${expense.amount}")
+            }
+        }
     }
 }

@@ -9,6 +9,28 @@ class BalanceSheet{
     private val globalBalanceMap: MutableMap<User, MutableMap<User, BigDecimal>> = mutableMapOf()
     private val groupBalanceMap: MutableMap<String, MutableMap<User, MutableMap<User, BigDecimal>>> = mutableMapOf()
 
+    fun settleAmount(settler: User, toWhom: User, amount: BigDecimal, groupId: String) {
+        val groupBalance = groupBalanceMap[groupId]
+        if(groupBalance == null){
+            println("group not found with id $groupId")
+            return
+        }
+
+        val owedMap = groupBalance[toWhom]
+
+
+        val currentDue = owedMap!![settler]
+
+        if (currentDue != null) {
+            owedMap[settler] = currentDue - amount
+        }
+
+        if (globalBalanceMap[toWhom]!![settler] != null) {
+            globalBalanceMap[toWhom]!![settler] = globalBalanceMap[toWhom]!![settler]!!.minus(amount)
+        }
+
+        println("$settler settled successfully with $toWhom with $amount")
+    }
 
     fun initGroupBalance(group: Group) {
         val groupId = group.groupId
@@ -26,7 +48,6 @@ class BalanceSheet{
             }
         }
 
-        // Initialize global map also (optional)
         for (payer in users) {
             globalBalanceMap.putIfAbsent(payer, mutableMapOf())
             for (payee in users) {

@@ -23,6 +23,12 @@ class UserController {
         return user
     }
 
+    fun createUser(user: User): User{
+        userStorage.add(user)
+        println("User was created successfully with id ${user.userId}")
+        return user
+    }
+
     fun getUser(id: String): User?{
         userStorage.forEach { user ->
             if (user.userId == id) return user

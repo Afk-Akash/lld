@@ -24,7 +24,9 @@ class SplitWiseSystemService(
                 "2" -> handleCreateGroup()
                 "3" -> handleAddExpense()
                 "4" -> handleViewBalances()
-                "5" -> {
+                "5" -> handleSettlement()
+                "6" -> viewExpenseLog()
+                "7" -> {
                     println("👋 Exiting SplitWise. Bye!")
                     return
                 }
@@ -35,13 +37,50 @@ class SplitWiseSystemService(
         }
     }
 
+    private fun viewExpenseLog() {
+        println("please enter group id in which u want to see the log")
+        val groupId = readln()
+        expenseController.viewExpense(groupId = groupId)
+    }
+
+    private fun handleSettlement() {
+        println("Enter user who want to settle his due")
+        val userId = readln()
+        val settler = userController.getUser(userId)
+        println("Enter userId with whom he want to settle ")
+        val payerId = readln()
+        if(userId == payerId) {
+            println("user and payer are selected same")
+            return
+        }
+        val toWhom = userController.getUser(payerId)
+
+        println("Enter amount")
+        val amount = readln().toBigDecimal()
+        if(amount <= BigDecimal.ZERO){
+            println("Nice try diddy, amount should be greater than Zero")
+            return
+        }
+        if(settler == null || toWhom == null){
+            println("either or the user not found")
+            return
+        }
+        println("Enter group in which you want to settle")
+        val groupId = readln()
+
+        expenseController.settleDue(settler, toWhom, amount, groupId)
+
+    }
+
     private fun startMenu() {
         println("\n🎉 Welcome to SplitWise CLI")
         println("1. Create User")
         println("2. Create Group")
         println("3. Add Expense")
         println("4. View Balances")
-        println("5. Exit")
+        println("5. settle amount")
+        println("6. view expense in group")
+        println("7. exit")
         print("Enter choice: ")
     }
 
