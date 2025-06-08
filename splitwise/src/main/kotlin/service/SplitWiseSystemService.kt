@@ -6,6 +6,7 @@ import org.splitwise.controller.UserController
 import org.splitwise.model.User
 import org.splitwise.strategy.EqualSplit
 import org.splitwise.strategy.PercentageSplit
+import org.splitwise.strategy.SplitStrategyFactory
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.util.*
@@ -13,7 +14,8 @@ import java.util.*
 class SplitWiseSystemService(
     private val userController: UserController,
     private val groupController: GroupController,
-    private val expenseController: ExpenseController
+    private val expenseController: ExpenseController,
+    private val splitStrategyFactory : SplitStrategyFactory
 ) {
 
     fun init() {
@@ -137,6 +139,10 @@ class SplitWiseSystemService(
         print("Enter choice [1-3]: ")
         val splitType = when (readln().trim()) {
             "1" -> "EQUAL"
+            "2" -> {
+                println("this is yet to be implemented")
+                return
+            }
             "3" -> "PERCENT"
             else -> {
                 println("❌ Invalid split type.")
@@ -148,11 +154,7 @@ class SplitWiseSystemService(
         println("Group Members: ${members.joinToString(", ")}")
 
 
-        val splitStrategy = when (splitType.uppercase()) {
-            "EQUAL" -> EqualSplit()
-            "PERCENT" -> PercentageSplit()
-            else -> return
-        }
+        val splitStrategy =     splitStrategyFactory.getSplitStrategy(splitType)
 
         val splits: Map<User, BigDecimal> = when (splitType) {
             "EQUAL" -> {
