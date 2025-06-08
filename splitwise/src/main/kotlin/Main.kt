@@ -1,7 +1,12 @@
 package org.splitwise
 
+import org.splitwise.controller.ExpenseController
+import org.splitwise.controller.GroupController
+import org.splitwise.controller.UserController
+import org.splitwise.model.BalanceSheet
 import org.splitwise.model.User
 import org.splitwise.service.SplitService
+import org.splitwise.service.SplitWiseSystemService
 
 fun main() {
     val allUsers = listOf(
@@ -11,21 +16,24 @@ fun main() {
         User(userId = "U4", name = "Vikrant", email = "vikrant@example.com", mobileNo = "4444444444"),
         User(userId = "U5", name = "Pranav", email = "pranav@example.com", mobileNo = "5555555555")
     )
-    val splitService = SplitService()
-    println("Enter amount to split")
-    val amount = readln().toBigDecimal()
 
-    println("Enter user name between them you want to split, make sure first user is payee")
-    val listOfUser = readln()
-        .split(",")
-        .toList()
-
-    val userToSplit: MutableList<User> = mutableListOf()
-    for (userName in allUsers) {
-        if(userName.name in listOfUser){
-            userToSplit.add(userName)
-        }
+    println("Welcome ji")
+    val userController = UserController()
+    allUsers.forEach { user ->
+        userController.createUser(user.name, user.email, user.mobileNo)
     }
 
-    splitService.splitAmount(amount, userToSplit.first(), userToSplit)
+    val balanceSheet = BalanceSheet()
+    val expenseController = ExpenseController(balanceSheet)
+    val groupController= GroupController(balanceSheet)
+
+    val splitWiseSystemService = SplitWiseSystemService(
+        userController = userController,
+        groupController = groupController,
+        expenseController = expenseController
+    )
+
+    splitWiseSystemService.init()
+
+
 }
