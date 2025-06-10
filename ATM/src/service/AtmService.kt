@@ -19,7 +19,7 @@ class AtmService(
 
             val input = readln()
             when (input) {
-                "1" -> handleWithdrawAmount()
+                "1" -> handleWithdrawAmount(cardNo)
                 "2" -> checkBalance(cardNo)
                 "3" -> {
                     println("exiting ...")
@@ -36,10 +36,10 @@ class AtmService(
     }
 
 
-    private fun handleWithdrawAmount() {
+    private fun handleWithdrawAmount(cardNo: String) {
         println("Please enter the amount")
         val amount = readln().toInt()
-        bankService.processAmount(amount)
+        bankService.processAmount(cardNo, amount)
     }
 
     private fun  checkBalance(cardNo: String){

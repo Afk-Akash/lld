@@ -8,7 +8,7 @@ import service.BankServiceMockImpl
 import service.BankServiceRealImpl
 
 class BankServiceFactory {
-    fun bankServiceFactoryBuilder(useMock: Boolean): BankService{
+    fun create(useMock: Boolean): BankService{
         return if(useMock){
             BankServiceMockImpl(FiveHundredProcessor(TwoHundredProcessor(HundredProcessor())))
         }else {

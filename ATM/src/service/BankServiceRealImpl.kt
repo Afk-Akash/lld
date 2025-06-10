@@ -1,7 +1,5 @@
 package service
 
-import cashProcessor.FiveHundredProcessor
-
 class BankServiceRealImpl(
 ) : BankService {
 
@@ -9,7 +7,7 @@ class BankServiceRealImpl(
         TODO()
     }
 
-    override fun processAmount(amount: Int) {
+    override fun processAmount(cardNo: String, amount: Int) {
         TODO()
     }
 
