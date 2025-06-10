@@ -1,4 +1,4 @@
-package processor
+package cashProcessor
 
 class HundredProcessor: CashProcess {
 

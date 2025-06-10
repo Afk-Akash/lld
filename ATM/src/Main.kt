@@ -1,15 +1,15 @@
-import processor.FiveHundredProcessor
-import processor.HundredProcessor
-import processor.TwoHundredProcessor
+import cashProcessor.FiveHundredProcessor
+import cashProcessor.HundredProcessor
+import cashProcessor.TwoHundredProcessor
+import factory.BankServiceFactory
+import service.AtmService
+import service.BankService
 
 fun main() {
-    while (true) {
-        println("please enter the amount you want to take out")
+    val bankServiceFactory = BankServiceFactory()
+    val bankService = bankServiceFactory.bankServiceFactoryBuilder(useMock =  true)
 
-        val input = readln().toInt()
+    val atmService = AtmService(bankService)
 
-        val atm = FiveHundredProcessor(TwoHundredProcessor(HundredProcessor()))
-
-        atm.processAmount(input)
-    }
+    atmService.init()
 }

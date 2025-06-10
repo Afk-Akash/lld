@@ -1,4 +1,4 @@
-package processor
+package cashProcessor
 
 class FiveHundredProcessor(
     private val twoHundredProcessor: TwoHundredProcessor
