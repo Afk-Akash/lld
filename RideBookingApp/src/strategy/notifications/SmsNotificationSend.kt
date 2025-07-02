@@ -1,0 +1,14 @@
+package src.strategy.notifications
+
+import src.model.Driver
+import src.model.RideRequest
+
+class SmsNotificationSend: NotificationStrategy {
+    override fun notifyDrivers(drivers: List<Driver>) {
+        TODO("Not yet implemented")
+    }
+
+    override fun notifyRider(rideRequest: RideRequest) {
+        TODO("Not yet implemented")
+    }
+}

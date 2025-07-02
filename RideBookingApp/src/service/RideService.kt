@@ -2,9 +2,11 @@ package src.service
 
 import src.model.RideRequest
 import src.strategy.driverMatchingStrategy.DriverMatchingStrategy
+import src.strategy.notifications.NotificationStrategy
 
 class RideService(
-    val driverMatchingStrategy: DriverMatchingStrategy
+    val driverMatchingStrategy: DriverMatchingStrategy,
+    val notificationStrategy: NotificationStrategy
 ) {
 
     fun initialize() {
@@ -19,5 +21,7 @@ class RideService(
 
     fun rideRequest(rideRequest: RideRequest){
         val availableDrivers = driverMatchingStrategy.findDrivers(rideRequest)
+
+        notificationStrategy.notifyDrivers(availableDrivers)
     }
 }
