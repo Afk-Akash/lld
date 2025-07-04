@@ -1,24 +1,23 @@
 package src.service
 
-import src.model.Driver
 import src.model.Location
 import src.model.RideRequest
 import src.model.Rider
 import src.strategy.fareStrategy.FareCalculatorStrategy
 
 class RiderHandler(
-    val fareCalculatorStrategy: FareCalculatorStrategy,
-    val rideService: RideService
+    val rideService: RideService,
+    val fareCalculatorService: FareCalculatorService
 ) {
-    fun rideRequest(rider: Rider, rideRequest: RideRequest): Driver? {
-        val fare = fareCalculatorStrategy.calculateFare(rideRequest)
+    fun rideRequest( rideRequest: RideRequest) {
+        val fare = fareCalculatorService.calculateFare(rideRequest)
         rideRequest.fare = fare
 
         rideService.rideRequest(rideRequest)
     }
 
-    fun cancelRideRequest(rider: Rider, rideRequest: RideRequest) {
-        TODO()
+    fun cancelRideRequest(rideRequest: RideRequest) {
+        rideService.cancelRideRequest(rideRequest)
     }
 
     fun updateRideRequest(rider: Rider, rideRequest: RideRequest, updatedDropLocation: Location) {

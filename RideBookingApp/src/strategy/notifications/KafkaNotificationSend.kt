@@ -8,6 +8,9 @@ class KafkaNotificationSend: NotificationStrategy {
         TODO("Not yet implemented")
     }
 
+    override fun notifyDriver(driver: Driver) {
+        TODO("Not yet implemented")
+    }
     override fun notifyRider(rideRequest: RideRequest) {
         TODO("Not yet implemented")
     }

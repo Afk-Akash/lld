@@ -1,5 +1,6 @@
 package src.model
 
+import src.model.enum.RideRequestStatus
 import java.math.BigDecimal
 
 data class RideRequest(
@@ -9,5 +10,6 @@ data class RideRequest(
     val fromLocation: Location,
     val toLocation: Location,
     var fare: BigDecimal,
-    val otp: Int
+    val otp: Int,
+    var status: RideRequestStatus = RideRequestStatus.SEARCHING
 )
