@@ -55,7 +55,8 @@ class BookingService(
         println("Select a class to cancel")
         val input = readln().toInt()
         val classToCancel = cultClassService.fetchCultClassUsingId(bookings[input-1].cultClassId)
-        if(classToCancel.startTime.plusMinutes(30) <= LocalDateTime.now()){
+
+        if(classToCancel.startTime.minusMinutes(30) <= LocalDateTime.now()){
             throw IllegalArgumentException("You can only cancel a class before 30 min of start")
         }
         val userBookingToCancel = UserBooking(

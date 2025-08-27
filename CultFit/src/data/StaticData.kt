@@ -54,8 +54,8 @@ object StaticData {
             classId = 3,
             classType = ClassType.ZOOMBA
         ),
-        startTime = LocalDateTime.now().plusHours(5),
-        endTime = LocalDateTime.now().plusHours(6),
+        startTime = LocalDateTime.now().plusMinutes(25),
+        endTime = LocalDateTime.now().plusHours(1),
         classStatus = ClassStatus.SCHEDULED,
         capacity = 1,
         confirmedUsersCount = 0,
