@@ -6,9 +6,20 @@ import entity.ScheduledCultClass
 import entity.User
 import enums.ClassStatus
 import enums.ClassType
+import enums.MembershipType
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 object StaticData {
+
+    val admin = User(
+        userId = 1,
+        name = "admin",
+        password = "admin",
+        membershipType = MembershipType.PLATINUM,
+        membershipExpiryDate = LocalDate.now().plusDays(30),
+        isAdmin = true
+    )
 
     val scheduledCultClassGym = ScheduledCultClass(
         scheduledCultClassId = 12345,

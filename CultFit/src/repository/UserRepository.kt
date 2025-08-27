@@ -1,10 +1,11 @@
 package repository
 
+import data.StaticData.admin
 import entity.User
 import javax.naming.AuthenticationException
 
 class UserRepository {
-    var userList: MutableList<User> = mutableListOf()
+    var userList: MutableList<User> = mutableListOf(admin)
 
     fun getAllUsers(): MutableList<User> {
         return userList

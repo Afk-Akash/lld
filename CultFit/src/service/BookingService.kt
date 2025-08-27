@@ -4,13 +4,15 @@ import entity.User
 import entity.UserBooking
 import enums.ClassStatus
 import enums.ClassType
+import repository.CultClassRepository
 import repository.UserBookingRepository
 import java.time.LocalDateTime
 
 class BookingService(
     val cultClassService: CultClassService,
     private val userBookingRepository: UserBookingRepository,
-    private val userService: UserService
+    private val userService: UserService,
+    private val cultClassRepository: CultClassRepository
 ) {
 
     fun bookClassByClassType(user: User, classType: ClassType) {
@@ -20,22 +22,22 @@ class BookingService(
                     cultClass.cultClass.classType == classType
         }
         var x = 1
-        for(cultClass in filteredClasses) {
+        for (cultClass in filteredClasses) {
             println("$x - Location ${cultClass.location} at Start Time ${cultClass.startTime} and End Time ${cultClass.endTime}")
             x++
         }
         val userInputClass = readln().toInt()
-        if(userInputClass in x..<0){
+        if (userInputClass in x..<0) {
             println("Invalid input")
             return
         }
-        val classToBook = filteredClasses[userInputClass-1]
+        val classToBook = filteredClasses[userInputClass - 1]
 
         cultClassService.bookCultClassForUser(user, classToBook.scheduledCultClassId)
     }
 
     fun showAllUserBookings(userId: Long) {
-       val bookings = userBookingRepository.getBookingByUserId(userId)
+        val bookings = userBookingRepository.getBookingByUserId(userId)
         var x = 1
         bookings.forEach { booking ->
             val cultClass = cultClassService.fetchCultClassUsingId(booking.cultClassId)
@@ -54,9 +56,9 @@ class BookingService(
         }
         println("Select a class to cancel")
         val input = readln().toInt()
-        val classToCancel = cultClassService.fetchCultClassUsingId(bookings[input-1].cultClassId)
+        val classToCancel = cultClassService.fetchCultClassUsingId(bookings[input - 1].cultClassId)
 
-        if(classToCancel.startTime.minusMinutes(30) <= LocalDateTime.now()){
+        if (classToCancel.startTime.minusMinutes(30) <= LocalDateTime.now()) {
             throw IllegalArgumentException("You can only cancel a class before 30 min of start")
         }
         val userBookingToCancel = UserBooking(
@@ -70,11 +72,43 @@ class BookingService(
         classToCancel.confirmedUsersCount -= 1
 
         val waitlistUser = classToCancel.waitlistUser.removeFirstOrNull()
-        if(waitlistUser == null){
+        if (waitlistUser == null) {
             return
-        }else{
+        } else {
             cultClassService.bookCultClassForUser(waitlistUser, classToCancel.scheduledCultClassId)
         }
+
+    }
+
+    fun cancelScheduledClass() {
+        val classes = cultClassService.fetchAllClasses()
+        val filteredClasses = classes.filter { cultClass ->
+            cultClass.classStatus == ClassStatus.SCHEDULED
+        }
+
+        var x = 1
+        for (cultClass in filteredClasses) {
+            println("$x - Location ${cultClass.location} at Start Time ${cultClass.startTime} and End Time ${cultClass.endTime}")
+            x++
+        }
+        println("Select a class to cancel")
+        val input = readln().toInt()
+        val classToCancel = cultClassService.fetchCultClassUsingId(filteredClasses[input - 1].scheduledCultClassId)
+
+        classToCancel.confirmedUser.forEach { user ->
+            val userBooking = UserBooking(
+                user.userId,
+                classToCancel.scheduledCultClassId
+            )
+            userBookingRepository.cancelBookingByUserIdAndCultClassId(userBooking)
+        }
+        val cancelledClass = classToCancel.copy(
+            classStatus = ClassStatus.CANCELLED,
+            confirmedUser = mutableListOf(),
+            waitlistUser = ArrayDeque()
+        )
+
+        cultClassRepository.updateCultClass(cancelledClass)
 
     }
 }

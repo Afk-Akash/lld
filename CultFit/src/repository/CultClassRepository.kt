@@ -11,6 +11,19 @@ class CultClassRepository {
         return scheduledCultClasses
     }
 
+    fun updateCultClass(scheduledCultClass: ScheduledCultClass) {
+        var classToRemove: ScheduledCultClass? = null
+        scheduledCultClasses.forEach { scheduledClass ->
+            if(scheduledCultClass.scheduledCultClassId == scheduledClass.scheduledCultClassId) {
+                classToRemove = scheduledClass
+            }
+        }
+        if(classToRemove!= null){
+            scheduledCultClasses.remove(classToRemove)
+        }
+        scheduledCultClasses.add(scheduledCultClass)
+    }
+
     fun fetchById(id: Long): ScheduledCultClass {
         scheduledCultClasses.forEach { scheduledCultClass ->
             if(scheduledCultClass.scheduledCultClassId == id) return scheduledCultClass
