@@ -13,7 +13,7 @@ class BookingService(
     private val userService: UserService
 ) {
 
-    fun bookClass(user: User, classType: ClassType) {
+    fun bookClassByClassType(user: User, classType: ClassType) {
         val classes = cultClassService.fetchAllClasses()
         val filteredClasses = classes.filter { cultClass ->
             cultClass.classStatus == ClassStatus.SCHEDULED &&
@@ -29,8 +29,9 @@ class BookingService(
             println("Invalid input")
             return
         }
+        val classToBook = filteredClasses[userInputClass-1]
 
-        cultClassService.bookCultClassForUser(user, filteredClasses[userInputClass-1].scheduledCultClassId)
+        cultClassService.bookCultClassForUser(user, classToBook.scheduledCultClassId)
     }
 
     fun showAllUserBookings(userId: Long) {
@@ -71,9 +72,7 @@ class BookingService(
         if(waitlistUser == null){
             return
         }else{
-            classToCancel.confirmedUser.add(waitlistUser)
-            //notify user
-            classToCancel.confirmedUsersCount += 1
+            cultClassService.bookCultClassForUser(waitlistUser, classToCancel.scheduledCultClassId)
         }
 
     }

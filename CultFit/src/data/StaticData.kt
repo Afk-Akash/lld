@@ -57,7 +57,7 @@ object StaticData {
         startTime = LocalDateTime.now().plusHours(5),
         endTime = LocalDateTime.now().plusHours(6),
         classStatus = ClassStatus.SCHEDULED,
-        capacity = 50,
+        capacity = 1,
         confirmedUsersCount = 0,
         location = Location(
             address = "Indira Nagar",

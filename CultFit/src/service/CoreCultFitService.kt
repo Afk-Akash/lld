@@ -5,7 +5,6 @@ import enums.ClassType.Companion.getClassType
 import enums.MembershipType.Companion.getMembership
 import java.time.LocalDate
 import kotlin.random.Random
-import kotlin.uuid.Uuid
 
 class CoreCultFitService(
     private val bookingService: BookingService,
@@ -87,6 +86,6 @@ class CoreCultFitService(
         println("Enter the class type - 1. GYM, 2. YOGA, 3. ZOOMBA")
         val input = readln().toInt()
         val classType = getClassType(input)
-        bookingService.bookClass(user, classType)
+        bookingService.bookClassByClassType(user, classType)
     }
 }
