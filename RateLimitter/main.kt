@@ -4,7 +4,6 @@ import kotlinx.coroutines.*
 import strategy.BucketTokenStrategy
 import strategy.SlidingWindowStrategy
 import java.time.Instant
-import kotlin.concurrent.thread
 
 fun main() {
     runBlocking {
