@@ -1,4 +1,7 @@
 package strategy;
 
-public class RateLimitStrategy {
+import request.RequestContext;
+
+public interface RateLimitStrategy {
+    boolean isRequestAllowed( RequestContext request);
 }
