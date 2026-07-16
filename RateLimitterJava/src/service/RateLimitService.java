@@ -11,8 +11,8 @@ public class RateLimitService {
         this.rateLimitServiceBuilder = rateLimitServiceBuilder;
     }
 
-    public boolean isRequestAllowed(String strategyName, RequestContext requestContext) {
-        RateLimitStrategy strategy = rateLimitServiceBuilder.getRateLimitStrategy(strategyName);
+    public boolean isRequestAllowed(String strategyName, RequestContext requestContext, int userId) {
+        RateLimitStrategy strategy = rateLimitServiceBuilder.getRateLimitStrategyOrchestrator(strategyName, userId);
         return strategy.isRequestAllowed(requestContext);
     }
 }

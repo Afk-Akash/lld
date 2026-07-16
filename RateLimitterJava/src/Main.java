@@ -7,6 +7,7 @@ import strategy.LeakyBucketStrategy;
 import strategy.SlidingWindowStrategy;
 import strategy.TokenBucketStrategy;
 
+import java.nio.file.InvalidPathException;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -58,24 +59,24 @@ public class Main {
      in this way server won't get burst traffic but more it works where req can be treated as async
 
      */
-    public static boolean process(RateLimitService rateLimitService, int id, String strategyName) {
+    public static boolean process(RateLimitService rateLimitService, int id, String strategyName, int userId) {
         RequestContext requestContext = new RequestContext(id);
 
-        boolean allowed = rateLimitService.isRequestAllowed(strategyName, requestContext);
+        boolean allowed = rateLimitService.isRequestAllowed(strategyName, requestContext, userId);
         System.out.println(LocalDateTime.now().getSecond() + ": Request allowed for id " + id + " : " + allowed);
         return allowed;
     }
-    public static void main(String[] args) throws InterruptedException {
-        Queue<Integer> q = new LinkedList<>();
-        RateLimitServiceBuilder builder = new RateLimitServiceBuilder(
-                new FixedWindowStrategy(),
-                new SlidingWindowStrategy(),
-                new TokenBucketStrategy(),
-                new LeakyBucketStrategy(q)
-        );
+    public static void main(String[] args) {
+
+        System.out.println("app start");
+
+        RateLimitServiceBuilder builder = new RateLimitServiceBuilder();
 
         RateLimitService rateLimitService = new RateLimitService(builder);
         RequestContext requestContext = new RequestContext(5);
+
+        boolean isAllow = rateLimitService.isRequestAllowed("na", requestContext, 2);
+
 
         ExecutorLeakyBucketService executorLeakyBucketService = new ExecutorLeakyBucketService();
 
@@ -84,7 +85,6 @@ public class Main {
 
 
         ExecutorService executor = Executors.newFixedThreadPool(5);
-        executor.submit(() -> executorLeakyBucketService.executeLeakyBucketRequest(q));
 
         executor.submit(() -> {
             ExecutorService childA = Executors.newFixedThreadPool(10);
@@ -93,7 +93,7 @@ public class Main {
                 int id = i;
                 childA.submit(() -> {
                     childA.submit(() -> {
-                        boolean allowed =  process(rateLimitService, id, "tokenBucketStrategy");
+                        boolean allowed =  process(rateLimitService, id, "tokenBucketStrategy", 1);
                         if(allowed) cnt.getAndIncrement();
                     });
                 });
@@ -107,14 +107,13 @@ public class Main {
             childA.shutdown();
         });
 
-
         executor.submit(() -> {
             ExecutorService childB = Executors.newFixedThreadPool(10);
             AtomicInteger cnt = new AtomicInteger();
             for (int i = 0; i < 130; i++) {
                 int id = i;
                 childB.submit(() -> {
-                    boolean allowed =  process(rateLimitService, id, "fixedWindowStrategy");
+                    boolean allowed =  process(rateLimitService, id, "fixedWindowStrategy", 2);
                     if(allowed) cnt.getAndIncrement();
                 });
                 try {
@@ -134,7 +133,7 @@ public class Main {
             for (int i = 0; i < 130; i++) {
                 int id = i;
                 childC.submit(() -> {
-                    boolean allowed =  process(rateLimitService, id, "slidingWindowStrategy");
+                    boolean allowed =  process(rateLimitService, id, "slidingWindowStrategy", 3);
                     if(allowed) cnt.getAndIncrement();
                 });
                 try {
@@ -155,7 +154,7 @@ public class Main {
             for (int i = 0; i < 130; i++) {
                 int id = i;
                 childD.submit(() -> {
-                    boolean allowed =  process(rateLimitService, id, "leakyBucketStrategy");
+                    boolean allowed =  process(rateLimitService, id, "leakyBucketStrategy", 4);
                     if(allowed) cnt.getAndIncrement();
                 });
                 try {

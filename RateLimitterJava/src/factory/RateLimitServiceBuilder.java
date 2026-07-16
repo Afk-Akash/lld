@@ -2,32 +2,34 @@ package factory;
 
 import strategy.*;
 
-public class RateLimitServiceBuilder {
-    FixedWindowStrategy fixedWindowStrategy;
-    SlidingWindowStrategy slidingWindowStrategy;
-    TokenBucketStrategy tokenBucketStrategy;
-    LeakyBucketStrategy leakyBucketStrategy;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentHashMap;
 
-    public RateLimitServiceBuilder(
-            FixedWindowStrategy fixedWindowStrategy,
-            SlidingWindowStrategy slidingWindowStrategy,
-            TokenBucketStrategy tokenBucketStrategy,
-            LeakyBucketStrategy leakyBucketStrategy
-    ) {
-        this.fixedWindowStrategy = fixedWindowStrategy;
-        this.slidingWindowStrategy = slidingWindowStrategy;
-        this.tokenBucketStrategy = tokenBucketStrategy;
-        this.leakyBucketStrategy = leakyBucketStrategy;
+public class RateLimitServiceBuilder {
+
+    Map<Integer, RateLimitStrategy> map = new ConcurrentHashMap<>();
+
+
+    public RateLimitStrategy getRateLimitStrategyOrchestrator(String strategyName, int userId){
+        if(map.get(userId) == null){
+            System.out.println("hello");
+            RateLimitStrategy strategy = getRateLimitStrategy(strategyName);
+            map.put(userId, strategy);
+            return strategy;
+        }
+        else return map.get(userId);
     }
 
-
-    public RateLimitStrategy getRateLimitStrategy(String strategyName){
+    private RateLimitStrategy getRateLimitStrategy(String strategyName){
+        Queue<Integer> queue = new LinkedList<>();
         return switch (strategyName) {
-            case "fixedWindowStrategy" -> fixedWindowStrategy;
-            case "slidingWindowStrategy" -> slidingWindowStrategy;
-            case "leakyBucketStrategy" -> leakyBucketStrategy;
-            default -> tokenBucketStrategy;
+            case "fixedWindowStrategy" -> new FixedWindowStrategy();
+            case "slidingWindowStrategy" -> new SlidingWindowStrategy();
+            case "leakyBucketStrategy" -> new LeakyBucketStrategy(queue);
+            default -> new TokenBucketStrategy();
         };
-
     }
 }
