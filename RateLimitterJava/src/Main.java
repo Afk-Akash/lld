@@ -66,7 +66,7 @@ public class Main {
         System.out.println(LocalDateTime.now().getSecond() + ": Request allowed for id " + id + " : " + allowed);
         return allowed;
     }
-    public static void main(String[] args) {
+    public static void main(String[] args){
 
         System.out.println("app start");
 

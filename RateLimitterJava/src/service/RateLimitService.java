@@ -12,7 +12,7 @@ public class RateLimitService {
     }
 
     public boolean isRequestAllowed(String strategyName, RequestContext requestContext, int userId) {
-        RateLimitStrategy strategy = rateLimitServiceBuilder.getRateLimitStrategyOrchestrator(strategyName, userId);
+        RateLimitStrategy strategy = rateLimitServiceBuilder.getRateLimitStrategyOrchestrator(userId, "/fund-transfer");
         return strategy.isRequestAllowed(requestContext);
     }
 }

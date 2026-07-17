@@ -10,25 +10,20 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class RateLimitServiceBuilder {
 
-    Map<Integer, RateLimitStrategy> map = new ConcurrentHashMap<>();
+    Map<String, RateLimitStrategy> map = new ConcurrentHashMap<>();
 
 
-    public RateLimitStrategy getRateLimitStrategyOrchestrator(String strategyName, int userId){
-        if(map.get(userId) == null){
-            System.out.println("hello");
-            RateLimitStrategy strategy = getRateLimitStrategy(strategyName);
-            map.put(userId, strategy);
-            return strategy;
-        }
-        else return map.get(userId);
+    public RateLimitStrategy getRateLimitStrategyOrchestrator( int userId, String apiPath){
+        String key = userId + "-" + apiPath;
+        return map.computeIfAbsent(key, k -> getRateLimitStrategy(apiPath));
     }
 
-    private RateLimitStrategy getRateLimitStrategy(String strategyName){
+    private RateLimitStrategy getRateLimitStrategy(String apiPath){
         Queue<Integer> queue = new LinkedList<>();
-        return switch (strategyName) {
-            case "fixedWindowStrategy" -> new FixedWindowStrategy();
-            case "slidingWindowStrategy" -> new SlidingWindowStrategy();
-            case "leakyBucketStrategy" -> new LeakyBucketStrategy(queue);
+        return switch (apiPath) {
+            case "/api/fund-transfer" -> new FixedWindowStrategy();
+            case "/api/get-balance" -> new SlidingWindowStrategy();
+            case "/api/loan-decision" -> new LeakyBucketStrategy(queue);
             default -> new TokenBucketStrategy();
         };
     }
